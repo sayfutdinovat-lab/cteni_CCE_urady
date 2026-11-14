@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Čtení CCE A2 — náročná varianta</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+<style>
+  :root{
+    --cream:#f5f0e8;
+    --card:#ffffff;
+    --dark:#2d1f24;
+    --pink:#e8457a;
+    --pink-soft:#fdf0f4;
+    --muted:#888880;
+    --success:#2d8a60;
+    --success-soft:#e7f5ee;
+    --error:#c8465c;
+    --error-soft:#fbe9ec;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--dark);
+    font-family:'Poppins',system-ui,-apple-system,sans-serif;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+  .page{
+    max-width:760px;
+    margin:0 auto;
+    padding-inline:16px;
+    padding-block:28px 60px;
+  }
+  .hero{
+    background:var(--dark);
+    color:#fff;
+    border-radius:20px;
+    padding:26px 22px;
+    text-align:center;
+    margin-bottom:22px;
+  }
+  .hero .eyebrow{
+    display:inline-block;
+    background:var(--pink);
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    padding:5px 14px;
+    border-radius:999px;
+    margin-bottom:14px;
+  }
+  .hero h1{
+    font-size:clamp(24px,6vw,32px);
+    font-weight:800;
+    margin:0 0 8px;
+  }
+  .hero p{
+    font-size:14px;
+    color:#e9dfe2;
+    margin:0;
+    line-height:1.5;
+  }
+  .section-divider{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:34px 0 16px;
+  }
+  .section-divider:first-of-type{margin-top:8px;}
+  .section-divider .line{flex:1;height:1px;background:#e3d6db;}
+  .section-divider .label{
+    display:flex;align-items:center;gap:8px;
+    background:var(--pink);
+    color:#fff;
+    font-weight:800;
+    font-size:14px;
+    letter-spacing:.04em;
+    padding:9px 20px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .task{
+    background:var(--card);
+    border-radius:20px;
+    padding:22px 18px 26px;
+    margin-bottom:22px;
+    box-shadow:0 2px 14px rgba(45,31,36,0.06);
+    border:1px solid #eee3e7;
+  }
+  .task-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--dark);
+    color:#fff;
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:.03em;
+    padding:8px 16px;
+    border-radius:999px;
+    margin-bottom:16px;
+  }
+  .task-badge .pink-star{color:var(--pink);}
+  .points-tag{
+    margin-left:8px;
+    background:var(--pink);
+    padding:3px 10px;
+    border-radius:999px;
+    font-size:11px;
+  }
+  .instruction{
+    background:var(--pink-soft);
+    border-left:4px solid var(--pink);
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:14px;
+    line-height:1.55;
+    margin-bottom:18px;
+  }
+  .reading{
+    background:var(--cream);
+    border-radius:14px;
+    padding:16px 16px;
+    font-size:14.5px;
+    line-height:1.7;
+    margin-bottom:18px;
+  }
+  .reading h3{margin:0 0 10px;font-size:16px;font-weight:700;}
+  .reading p{margin:0 0 10px;}
+  .reading p:last-child{margin-bottom:0;}
+  .reading mark{
+    background:#fde3ec;
+    color:var(--pink);
+    font-weight:700;
+    padding:0 3px;
+    border-radius:4px;
+  }
+  .offers{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  @media (max-width:520px){ .offers{grid-template-columns:1fr;} }
+  .offer{
+    background:var(--cream);
+    border-radius:14px;
+    padding:14px;
+    font-size:13.5px;
+    line-height:1.55;
+  }
+  .offer strong{display:block;font-size:13.5px;margin-bottom:6px;color:var(--dark);}
+  .offer .letter{
+    display:inline-flex;
+    align-items:center;justify-content:center;
+    width:22px;height:22px;
+    background:var(--pink);
+    color:#fff;
+    font-weight:700;
+    font-size:12px;
+    border-radius:50%;
+    margin-right:7px;
+  }
+  .email-box{
+    background:#fff;
+    border:1px solid #e5dde0;
+    border-radius:14px;
+    overflow:hidden;
+    margin-bottom:18px;
+  }
+  .email-topbar{
+    background:#efe9ea;
+    padding:8px 14px;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .email-meta{
+    padding:10px 16px;
+    font-size:13px;
+    color:var(--muted);
+    border-bottom:1px solid #f0eaec;
+  }
+  .email-meta b{color:var(--dark);}
+  .email-body{
+    padding:14px 16px 16px;
+    font-size:14px;
+    line-height:1.65;
+  }
+  .email-body p{margin:0 0 10px;}
+  .email-body p:last-child{margin-bottom:0;}
+  .email-body mark{
+    background:#fde3ec;
+    color:var(--pink);
+    font-weight:700;
+    padding:0 3px;
+    border-radius:4px;
+  }
+  .msg-label{
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--pink);
+    margin-bottom:6px;
+  }
+  .two-col{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-bottom:18px;
+  }
+  @media (max-width:560px){ .two-col{grid-template-columns:1fr;} }
+  .q{
+    margin-bottom:16px;
+    padding-bottom:16px;
+    border-bottom:1px solid #f1ebed;
+  }
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{
+    font-size:14.5px;
+    font-weight:600;
+    margin-bottom:10px;
+    line-height:1.45;
+  }
+  .q-num{color:var(--pink);margin-right:5px;}
+  .answers{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .ans-btn{
+    font-family:inherit;
+    border:2px solid #e5dde0;
+    background:#fff;
+    color:var(--dark);
+    font-size:13.5px;
+    font-weight:600;
+    padding:8px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .ans-btn:hover{border-color:var(--pink);}
+  .ans-btn:focus-visible{outline:2px solid var(--pink);outline-offset:2px;}
+  .ans-btn.selected{background:var(--pink);border-color:var(--pink);color:#fff;}
+  .ans-btn.correct{background:var(--success);border-color:var(--success);color:#fff;}
+  .ans-btn.incorrect{background:var(--error);border-color:var(--error);color:#fff;}
+  .ans-btn.reveal{border-color:var(--success);color:var(--success);background:#fff;}
+  .ans-btn[disabled]{cursor:default;}
+  .explain{
+    display:none;
+    margin-top:10px;
+    background:var(--error-soft);
+    border-left:4px solid var(--error);
+    border-radius:8px;
+    padding:10px 12px;
+    font-size:13px;
+    line-height:1.5;
+    color:#5a2430;
+  }
+  .explain.show{display:block;}
+  .explain b{color:var(--error);}
+  .check-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-top:6px;
+  }
+  .check-btn{
+    font-family:inherit;
+    background:var(--pink);
+    color:#fff;
+    border:none;
+    font-size:14px;
+    font-weight:700;
+    padding:11px 22px;
+    border-radius:999px;
+    cursor:pointer;
+  }
+  .check-btn:hover{background:#d63868;}
+  .check-btn[disabled]{background:#e3b8c6;cursor:default;}
+  .hint-msg{font-size:13px;color:var(--muted);}
+  .score{
+    display:none;
+    font-weight:700;
+    font-size:14px;
+    padding:8px 16px;
+    border-radius:999px;
+  }
+  .score.show{display:inline-block;}
+  .score.good{background:var(--success-soft);color:var(--success);}
+  .score.bad{background:var(--error-soft);color:var(--error);}
+  .credit{text-align:center;font-size:12.5px;color:var(--muted);margin-top:4px;}
+  .footer-note{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--muted);
+    line-height:1.6;
+    margin-top:8px;
+    padding:0 10px;
+  }
+  .watermark{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.05;overflow:hidden;}
+  .watermark span{position:absolute;white-space:nowrap;font-size:13px;font-weight:700;color:var(--dark);transform:rotate(-28deg);}
+  .content{position:relative;z-index:1;}
+
+  .topics-legend{
+    display:flex;flex-wrap:wrap;gap:8px;
+    font-size:12.5px;
+    background:var(--pink-soft);
+    border-radius:10px;
+    padding:10px 12px;
+    margin-bottom:16px;
+  }
+  .topics-legend b{color:var(--pink);}
+
+  .vocab-box{
+    background:var(--cream);
+    border-radius:14px;
+    padding:14px 16px;
+    margin-bottom:18px;
+    font-size:13.5px;
+    line-height:1.6;
+  }
+  .vocab-box h4{margin:0 0 8px;font-size:14px;font-weight:700;}
+  .vocab-box table{width:100%;border-collapse:collapse;}
+  .vocab-box td{padding:4px 6px;vertical-align:top;border-bottom:1px solid #ece3e6;}
+  .vocab-box td:first-child{font-weight:700;color:var(--pink);white-space:nowrap;}
+
+  .stats-box{
+    background:var(--cream);
+    border-radius:14px;
+    padding:14px 16px;
+    margin-bottom:18px;
+    font-size:13.5px;
+    line-height:1.6;
+  }
+  .stats-box p{margin:0;}
+  .stats-opt{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    font-size:12.5px;
+    color:var(--muted);
+  }
+  .stats-opt input{width:16px;height:16px;margin-top:1px;flex:none;}
+
+  .gate-overlay{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    background:var(--dark);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  .gate-card{
+    background:var(--card);
+    border-radius:20px;
+    padding:32px 26px;
+    max-width:320px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 10px 40px rgba(0,0,0,0.3);
+  }
+  .gate-card .eyebrow{
+    display:inline-block;
+    background:var(--pink);
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:5px 14px;
+    border-radius:999px;
+    margin-bottom:14px;
+  }
+  .gate-card h2{margin:0 0 8px;font-size:19px;font-weight:800;color:var(--dark);}
+  .gate-card p{margin:0 0 18px;font-size:13.5px;color:var(--muted);line-height:1.5;}
+  .gate-input{
+    font-family:inherit;
+    width:100%;
+    border:2px solid #e5dde0;
+    border-radius:10px;
+    padding:11px 14px;
+    font-size:15px;
+    text-align:center;
+    margin-bottom:12px;
+  }
+  .gate-input:focus{outline:none;border-color:var(--pink);}
+  .gate-btn{
+    font-family:inherit;
+    background:var(--pink);
+    color:#fff;
+    border:none;
+    font-size:14px;
+    font-weight:700;
+    padding:11px 22px;
+    border-radius:999px;
+    cursor:pointer;
+    width:100%;
+  }
+  .gate-btn:hover{background:#d63868;}
+  .gate-error{
+    display:none;
+    color:var(--error);
+    font-size:13px;
+    font-weight:600;
+    margin-top:10px;
+  }
+  .gate-error.show{display:block;}
+  #page-content{display:none;}
+</style>
+</head>
+<body>
+
+
+<div class="gate-overlay" id="gateOverlay">
+  <div class="gate-card">
+    <span class="eyebrow">🔒 Chráněný materiál</span>
+    <h2>Čtení — náročná varianta</h2>
+    <p>Tento materiál je jen pro naši skupinu. Zadejte prosím heslo, které jste dostali na Telegramu.</p>
+    <input type="password" class="gate-input" id="gateInput" placeholder="heslo" autocomplete="off">
+    <button class="gate-btn" id="gateBtn">Vstoupit</button>
+    <div class="gate-error" id="gateError">Nesprávné heslo, zkuste to znovu.</div>
+  </div>
+</div>
+
+<div class="watermark" id="watermark"></div>
+
+<div class="page content" id="page-content">
+
+  <div class="hero">
+    <span class="eyebrow">✦ Čtení CCE A2 — náročná varianta</span>
+    <h1>Úřady a poplatky</h1>
+    <p>Stejná struktura jako u ostré zkoušky CCE A2 (4 úlohy, 20 bodů), ale text i otázky jsou náročnější — hlavně na slovíčka jako <b>jen, když, ani…ani, buď…nebo, loni/vloni, letos</b>, se kterými má hodně klientů problém. Zkuste si to napoprvé bez slovníku, chyby nic neznamenají — od toho to cvičení je.</p>
+  </div>
+
+  <div class="stats-box">
+    <label class="stats-opt"><input type="checkbox" id="statsOptOutBox">Nechci odesílat svůj výsledek do anonymní statistiky (bez jména, jen číslo pro porovnání).</label>
+  </div>
+
+  <div class="topics-legend">
+    <b>📌 Pozor na tahle slovíčka:</b>
+    <span>jen = только</span>
+    <span>·</span>
+    <span>ani…ani = ни…ни</span>
+    <span>·</span>
+    <span>buď…nebo = либо…или</span>
+    <span>·</span>
+    <span>loni/vloni = в прошлом году</span>
+    <span>·</span>
+    <span>letos = в этом году</span>
+  </div>
+
+  <!-- ============ ČTENÍ ============ -->
+  <div class="section-divider"><div class="line"></div><div class="label">📖 Čtení s porozuměním</div><div class="line"></div></div>
+
+  <!-- ÚLOHA 1 -->
+  <div class="task" id="ct1">
+    <div class="task-badge"><span class="pink-star">✦</span> ÚLOHA Č. 1 — OZNÁMENÍ CIZINECKÉ POLICIE<span class="points-tag">6 bodů</span></div>
+    <div class="instruction">Přečtěte si text a úkoly 1–6. Rozhodněte, jestli jsou tvrzení pravda (ANO), nebo nejsou pravda (NE).</div>
+    <div class="reading">
+      <h3>📋 Nový systém objednávek</h3>
+      <p>Od 1. února mění cizinecká policie systém objednávek. Dřív jste si mohli termín vybrat <mark>jen</mark> telefonicky, teď to půjde pouze online.</p>
+      <p>Na stránkách najdete volné termíny na příští tři měsíce. Pokud termín nenajdete, zkuste stránku znovu ráno, <mark>když</mark> se uvolňují nová místa.</p>
+      <p>Bez objednání vás na pracovišti nepřijmou, <mark>ani</mark> kdybyste čekali od rána. <mark>Loni</mark> bylo možné přijít bez objednání v naléhavých případech, <mark>letos</mark> už tato výjimka neplatí.</p>
+      <p>Formulář žádosti si můžete stáhnout předem z webu, nebo ho vyplnit až na místě. Vezměte si s sebou platný pas a aktuální fotografii, jinak vám žádost nepřijmou.</p>
+    </div>
+    <div id="ct1-q">
+      <div class="q" data-correct="NE">
+        <div class="q-text"><span class="q-num">1.</span>Dnes je možné se objednat jen telefonicky.</div>
+        <div class="answers"><button class="ans-btn" data-val="ANO">ANO</button><button class="ans-btn" data-val="NE">NE</button></div>
+        <div class="explain">✗ Správně: <b>NE</b> — telefonicky to bylo možné dřív, dnes je objednání pouze online.</div>
+      </div>
+      <div class="q" data-correct="ANO">
+        <div class="q-text"><span class="q-num">2.</span>Bez objednání vás na pracovišti vůbec nepřijmou.</div>
+        <div class="answers"><button class="ans-btn" data-val="ANO">ANO</button><button class="ans-btn" data-val="NE">NE</button></div>
+        <div class="explain">✗ Správně: <b>ANO</b> — text říká, že vás nepřijmou, ani kdybyste čekali od rána.</div>
+      </div>
+      <div class="q" data-correct="ANO">
+        <div class="q-text"><span class="q-num">3.</span>Loni mohli lidé v naléhavých případech přijít bez objednání.</div>
+        <div class="answers"><button class="ans-btn" data-val="ANO">ANO</button><button class="ans-btn" data-val="NE">NE</button></div>
+        <div class="explain">✗ Správně: <b>ANO</b> — loni tato výjimka platila.</div>
+      </div>
+      <div class="q" data-correct="NE">
+        <div class="q-text"><span class="q-num">4.</span>Letos platí stejná výjimka jako loni.</div>
+        <div class="answers"><button class="ans-btn" data-val="ANO">ANO</button><button class="ans-btn" data-val="NE">NE</button></div>
+        <div class="explain">✗ Správně: <b>NE</b> — letos už výjimka neplatí, to je rozdíl oproti loňsku.</div>
+      </div>
+      <div class="q" data-correct="NE">
+        <div class="q-text"><span class="q-num">5.</span>Formulář žádosti musíte vyplnit teprve na místě.</div>
+        <div class="answers"><button class="ans-btn" data-val="ANO">ANO</button><button class="ans-btn" data-val="NE">NE</button></div>
+        <div class="explain">✗ Správně: <b>NE</b> — formulář si můžete stáhnout předem, vyplnění na místě je jen druhá možnost.</div>
+      </div>
+      <div class="q" data-correct="NE">
+        <div class="q-text"><span class="q-num">6.</span>Na webu jsou volné termíny vidět jen na příští měsíc.</div>
+        <div class="answers"><button class="ans-btn" data-val="ANO">ANO</button><button class="ans-btn" data-val="NE">NE</button></div>
+        <div class="explain">✗ Správně: <b>NE</b> — termíny jsou vidět na příští tři měsíce, ne jen jeden.</div>
+      </div>
+    </div>
+    <div class="check-row">
+      <button class="check-btn" data-task="ct1-q">Zkontrolovat odpovědi</button>
+      <span class="hint-msg" data-hint="ct1-q"></span>
+      <span class="score" data-score="ct1-q"></span>
+    </div>
+  </div>
+
+  <!-- ÚLOHA 2 -->
+  <div class="task" id="ct2">
+    <div class="task-badge"><span class="pink-star">✦</span> ÚLOHA Č. 2 — DODAVATELÉ ELEKTŘINY<span class="points-tag">6 bodů</span></div>
+    <div class="instruction">Přečtěte si nabídky A–D a úkoly 7–12. U úkolů vyberte jednu správnou odpověď. Každou nabídku můžete použít i víckrát.</div>
+    <div class="offers">
+      <div class="offer"><strong><span class="letter">A</span>EnergoPlus</strong>Tradiční dodavatel s dlouholetou historií. Cena elektřiny je fixní na 2 roky, takže se nemusíte bát změny cen. Přechod od jiného dodavatele je zdarma. Zákaznická linka je k dispozici <mark>jen</mark> ve všední dny od 8 do 16 hodin.</div>
+      <div class="offer"><strong><span class="letter">B</span>ChytréEnergie</strong>Moderní online dodavatel bez papírových smluv a bez dlouhého čekání na přepážce. Cena elektřiny se může měnit každý měsíc podle aktuální situace na trhu, a to jak nahoru, tak dolů. Vše spravujete přes mobilní aplikaci, ve které vidíte i aktuální spotřebu. Noví klienti mají první tři měsíce slevu 20 %.</div>
+      <div class="offer"><strong><span class="letter">C</span>Domácí Energie</strong>Tarif určený pro rodiny s vyšší spotřebou, například s malými dětmi. Elektřina je levnější večer a v noci, <mark>když</mark> bývá doma víc lidí a svítí se déle. Podmínkou je instalace chytrého elektroměru, který dodavatel nainstaluje zdarma do dvou týdnů.</div>
+      <div class="offer"><strong><span class="letter">D</span>StálaCena</strong>Garantujeme stejnou cenu po celé tři roky smlouvy, ať se trh s energiemi chová jakkoli. Měsíční poplatek je o něco vyšší než u konkurence, <mark>ale</mark> na konci roku vás nečeká žádné nepříjemné vyúčtování.</div>
+    </div>
+    <div id="ct2-q">
+      <div class="q" data-correct="C"><div class="q-text"><span class="q-num">7.</span>U kterého dodavatele musíte mít speciální elektroměr?</div><div class="answers"><button class="ans-btn" data-val="A">A</button><button class="ans-btn" data-val="B">B</button><button class="ans-btn" data-val="C">C</button><button class="ans-btn" data-val="D">D</button></div><div class="explain">✗ Správně: <b>C</b> — Domácí Energie vyžaduje chytrý elektroměr.</div></div>
+      <div class="q" data-correct="B"><div class="q-text"><span class="q-num">8.</span>Kde se cena může měnit i během roku?</div><div class="answers"><button class="ans-btn" data-val="A">A</button><button class="ans-btn" data-val="B">B</button><button class="ans-btn" data-val="C">C</button><button class="ans-btn" data-val="D">D</button></div><div class="explain">✗ Správně: <b>B</b> — u ChytréEnergie se cena může měnit každý měsíc.</div></div>
+      <div class="q" data-correct="A"><div class="q-text"><span class="q-num">9.</span>Kde nezaplatíte nic za přechod od jiného dodavatele?</div><div class="answers"><button class="ans-btn" data-val="A">A</button><button class="ans-btn" data-val="B">B</button><button class="ans-btn" data-val="C">C</button><button class="ans-btn" data-val="D">D</button></div><div class="explain">✗ Správně: <b>A</b> — u EnergoPlus je přechod zdarma.</div></div>
+      <div class="q" data-correct="B"><div class="q-text"><span class="q-num">10.</span>Kde dostanou nejnižší cenu jen první tři měsíce?</div><div class="answers"><button class="ans-btn" data-val="A">A</button><button class="ans-btn" data-val="B">B</button><button class="ans-btn" data-val="C">C</button><button class="ans-btn" data-val="D">D</button></div><div class="explain">✗ Správně: <b>B</b> — sleva 20 % u ChytréEnergie platí jen první tři měsíce.</div></div>
+      <div class="q" data-correct="A"><div class="q-text"><span class="q-num">11.</span>Který dodavatel má zákaznickou linku jen v určité dny a hodiny?</div><div class="answers"><button class="ans-btn" data-val="A">A</button><button class="ans-btn" data-val="B">B</button><button class="ans-btn" data-val="C">C</button><button class="ans-btn" data-val="D">D</button></div><div class="explain">✗ Správně: <b>A</b> — EnergoPlus má linku jen ve všední dny od 8 do 16 hodin.</div></div>
+      <div class="q" data-correct="D"><div class="q-text"><span class="q-num">12.</span>Kde platíte každý měsíc trochu víc, ale bez rizika změny cen?</div><div class="answers"><button class="ans-btn" data-val="A">A</button><button class="ans-btn" data-val="B">B</button><button class="ans-btn" data-val="C">C</button><button class="ans-btn" data-val="D">D</button></div><div class="explain">✗ Správně: <b>D</b> — StálaCena má vyšší poplatek, ale garantuje stejnou cenu.</div></div>
+    </div>
+    <div class="check-row">
+      <button class="check-btn" data-task="ct2-q">Zkontrolovat odpovědi</button>
+      <span class="hint-msg" data-hint="ct2-q"></span>
+      <span class="score" data-score="ct2-q"></span>
+    </div>
+  </div>
+
+  <!-- ÚLOHA 3 -->
+  <div class="task" id="ct3">
+    <div class="task-badge"><span class="pink-star">✦</span> ÚLOHA Č. 3 — E-MAIL O TRVALÉM POBYTU<span class="points-tag">5 bodů</span></div>
+    <div class="instruction">Přečtěte si e-mail a úkoly 13–17. U každého úkolu vyberte jednu správnou odpověď A–C.</div>
+    <div class="email-box">
+      <div class="email-topbar">✉️ Nová zpráva</div>
+      <div class="email-meta"><b>Komu:</b> Kateřina &nbsp;·&nbsp; <b>Předmět:</b> Konečně dobrá zpráva!</div>
+      <div class="email-body">
+        <p>Milá Kateřino, děkuji za zprávu. Konečně mám dobré zprávy — trvalý pobyt mi schválili!</p>
+        <p>Žádost jsem podávala už <mark>loni</mark> na podzim, <mark>ale</mark> úřad mi chyběl nějaký doklad, tak jsem musela všechno nosit znovu. <mark>Letos</mark> v lednu jsem konečně dostala rozhodnutí.</p>
+        <p>Čekání bylo dlouhé a nervy mi to stálo hodně, protože jsem nevěděla, jestli budu moct zůstat v práci. Naštěstí mi firma dala <mark>buď</mark> prodloužení smlouvy, <mark>nebo</mark> možnost pracovat na dálku, dokud se vše nevyřeší.</p>
+        <p>Nejvíc mě překvapilo, že úředníci byli tentokrát milí a všechno mi vysvětlili pomalu a jasně, i když jsem se na začátku bála, že mi nebudou chtít rozumět. Teď musím <mark>jen</mark> vyměnit doklady a nahlásit novou adresu na cizinecké policii.</p>
+        <p><mark>Ani</mark> kamarádka, <mark>ani</mark> její manžel ještě svou žádost nedostali, čekají už rok. Doufám, že to pro ně dopadne stejně dobře.</p>
+        <p>Co je nového u tebe? Máš už taky trvalý pobyt?</p>
+      </div>
+    </div>
+    <div id="ct3-q">
+      <div class="q" data-correct="B">
+        <div class="q-text"><span class="q-num">13.</span>Proč musela žadatelka nosit doklady znovu?</div>
+        <div class="answers"><button class="ans-btn" data-val="A">A) Ztratila je.</button><button class="ans-btn" data-val="B">B) Něco jí chybělo.</button><button class="ans-btn" data-val="C">C) Úřad je ztratil.</button></div>
+        <div class="explain">✗ Správně: <b>B</b> — úřadu chyběl nějaký doklad.</div>
+      </div>
+      <div class="q" data-correct="B">
+        <div class="q-text"><span class="q-num">14.</span>Co udělala firma, než žadatelka dostala rozhodnutí?</div>
+        <div class="answers"><button class="ans-btn" data-val="A">A) Propustila ji.</button><button class="ans-btn" data-val="B">B) Nabídla jí dvě možnosti, jak zůstat zaměstnaná.</button><button class="ans-btn" data-val="C">C) Poslala ji na neplacené volno.</button></div>
+        <div class="explain">✗ Správně: <b>B</b> — firma dala buď prodloužení smlouvy, nebo práci na dálku.</div>
+      </div>
+      <div class="q" data-correct="B">
+        <div class="q-text"><span class="q-num">15.</span>Jak dlouho čekají na rozhodnutí kamarádka a její manžel?</div>
+        <div class="answers"><button class="ans-btn" data-val="A">A) Několik týdnů.</button><button class="ans-btn" data-val="B">B) Asi rok.</button><button class="ans-btn" data-val="C">C) Víc než dva roky.</button></div>
+        <div class="explain">✗ Správně: <b>B</b> — text říká, že čekají už rok.</div>
+      </div>
+      <div class="q" data-correct="A">
+        <div class="q-text"><span class="q-num">16.</span>Co žadatelku na úřadu tentokrát překvapilo?</div>
+        <div class="answers"><button class="ans-btn" data-val="A">A) Úředníci byli vstřícní.</button><button class="ans-btn" data-val="B">B) Úřad byl zavřený.</button><button class="ans-btn" data-val="C">C) Musela platit poplatek.</button></div>
+        <div class="explain">✗ Správně: <b>A</b> — úředníci byli milí a vysvětlili jí vše pomalu a jasně.</div>
+      </div>
+      <div class="q" data-correct="B">
+        <div class="q-text"><span class="q-num">17.</span>Co musí žadatelka ještě udělat?</div>
+        <div class="answers"><button class="ans-btn" data-val="A">A) Podat novou žádost.</button><button class="ans-btn" data-val="B">B) Nahlásit adresu a vyměnit doklady.</button><button class="ans-btn" data-val="C">C) Najít nového zaměstnavatele.</button></div>
+        <div class="explain">✗ Správně: <b>B</b> — musí jen vyměnit doklady a nahlásit novou adresu.</div>
+      </div>
+    </div>
+    <div class="check-row">
+      <button class="check-btn" data-task="ct3-q">Zkontrolovat odpovědi</button>
+      <span class="hint-msg" data-hint="ct3-q"></span>
+      <span class="score" data-score="ct3-q"></span>
+    </div>
+  </div>
+
+  <!-- ÚLOHA 4 -->
+  <div class="task" id="ct4">
+    <div class="task-badge"><span class="pink-star">✦</span> ÚLOHA Č. 4 — KRÁTKÉ ZPRÁVY<span class="points-tag">3 body</span></div>
+    <div class="instruction">Přečtěte si dva texty a úkoly 18–20. U každého úkolu vyberte jednu správnou odpověď A–C.</div>
+    <div class="two-col">
+      <div class="reading" style="margin-bottom:0;">
+        <div class="msg-label">⚡ Upozornění dodavatele energie</div>
+        <p>Vážení klienti, upozorňujeme, že se změnil termín splatnosti faktur za elektřinu. Dříve jste platili do 15. dne měsíce, nově je to až do konce měsíce. Nový termín platí od ledna tohoto roku, <mark>loni</mark> se ještě platilo starým způsobem.</p>
+        <p>Pokud zaplatíte pozdě, účtujeme poplatek z prodlení. Platbu můžete provést <mark>buď</mark> bankovním převodem, <mark>nebo</mark> přímo v naší aplikaci.</p>
+      </div>
+      <div class="reading" style="margin-bottom:0;">
+        <div class="msg-label">💬 SMS od kamarádky</div>
+        <p>Ahoj, zapomněla jsi mi dát vědět, jestli jsi se dostala na cizineckou policii. Já jsem tam byla včera a řekli mi, že bez nového razítka v pasu mi trvalý pobyt neprodlouží.</p>
+        <p>Musím tam zajít znovu, <mark>jen</mark> nevím, jestli stihnu termín do pátku.<br>Míša</p>
+      </div>
+    </div>
+    <div id="ct4-q">
+      <div class="q" data-correct="B">
+        <div class="q-text"><span class="q-num">18.</span>Co se změnilo u plateb za elektřinu?</div>
+        <div class="answers"><button class="ans-btn" data-val="A">A) Platí se méně.</button><button class="ans-btn" data-val="B">B) Platí se později.</button><button class="ans-btn" data-val="C">C) Platí se jen v aplikaci.</button></div>
+        <div class="explain">✗ Správně: <b>B</b> — termín splatnosti se posunul z 15. dne na konec měsíce.</div>
+      </div>
+      <div class="q" data-correct="A">
+        <div class="q-text"><span class="q-num">19.</span>Co kamarádka potřebuje k prodloužení pobytu?</div>
+        <div class="answers"><button class="ans-btn" data-val="A">A) Nové razítko v pase.</button><button class="ans-btn" data-val="B">B) Nový pas.</button><button class="ans-btn" data-val="C">C) Potvrzení o práci.</button></div>
+        <div class="explain">✗ Správně: <b>A</b> — bez nového razítka v pase jí pobyt neprodlouží.</div>
+      </div>
+      <div class="q" data-correct="B">
+        <div class="q-text"><span class="q-num">20.</span>Proč je kamarádka trochu nervózní?</div>
+        <div class="answers"><button class="ans-btn" data-val="A">A) Nestihla zaplatit fakturu.</button><button class="ans-btn" data-val="B">B) Možná nestihne termín do pátku.</button><button class="ans-btn" data-val="C">C) Ztratila doklady.</button></div>
+        <div class="explain">✗ Správně: <b>B</b> — bojí se, že nestihne termín do pátku.</div>
+      </div>
+    </div>
+    <div class="check-row">
+      <button class="check-btn" data-task="ct4-q">Zkontrolovat odpovědi</button>
+      <span class="hint-msg" data-hint="ct4-q"></span>
+      <span class="score" data-score="ct4-q"></span>
+    </div>
+  </div>
+
+  <div class="task" id="statsResultBox" hidden>
+    <div class="task-badge"><span class="pink-star">✦</span> SROVNÁNÍ S OSTATNÍMI</div>
+    <div class="stats-box">
+      <p>Zatím odpovědělo <b id="statsN">0</b> lidí. Průměrný výsledek je <b id="statsAvg">0</b> z 20 bodů. Byli jste lepší než <b id="statsPct">0</b> % ostatních.</p>
+    </div>
+  </div>
+
+  <div class="credit">@tatiana.sayfutdinova</div>
+  <div class="footer-note">Tento materiál je určen pouze pro klienty Taťány Sajfutdinovové. Prosíme, nesdílejte ho dál mimo naši skupinu. Děkujeme za pochopení. 🙏🏼</div>
+
+</div>
+
+<script>
+(function(){
+  // ---- password gate (rotates weekly between cteniCCE26 / CCE26cteni) ----
+  function isoWeekNumber(d){
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    var day = (d.getUTCDay() + 6) % 7; // Mon=0..Sun=6
+    d.setUTCDate(d.getUTCDate() - day + 3); // nearest Thursday
+    var week1 = new Date(Date.UTC(d.getUTCFullYear(), 0, 4));
+    return 1 + Math.round(((d - week1) / 86400000 - 3 + (week1.getUTCDay() + 6) % 7) / 7);
+  }
+  var currentPassword = (isoWeekNumber(new Date()) % 2 === 0) ? 'cteniCCE26' : 'CCE26cteni';
+
+  function unlock(){
+    var overlay = document.getElementById('gateOverlay');
+    var page = document.getElementById('page-content');
+    if (overlay) overlay.style.display = 'none';
+    if (page) page.style.display = 'block';
+    try { sessionStorage.setItem('cteni-urady-unlocked', '1'); } catch(e){}
+  }
+
+  var alreadyUnlocked = false;
+  try { alreadyUnlocked = sessionStorage.getItem('cteni-urady-unlocked') === '1'; } catch(e){}
+  if (alreadyUnlocked){
+    unlock();
+  } else {
+    var gateBtn = document.getElementById('gateBtn');
+    var gateInput = document.getElementById('gateInput');
+    var gateError = document.getElementById('gateError');
+    function tryUnlock(){
+      var val = (gateInput.value || '').trim().toLowerCase();
+      if (val === currentPassword.toLowerCase()){
+        unlock();
+      } else {
+        gateError.classList.add('show');
+      }
+    }
+    if (gateBtn){
+      gateBtn.addEventListener('click', tryUnlock);
+      gateInput.addEventListener('keydown', function(e){
+        if (e.key === 'Enter') tryUnlock();
+      });
+    }
+  }
+
+  // watermark
+  var wm = document.getElementById('watermark');
+  var full = 'POUZE PRO NAŠI SKUPINU · '.repeat(6);
+  for (var r = 0; r < 7; r++){
+    var s = document.createElement('span');
+    s.textContent = full;
+    s.style.top = (r * 15 - 5) + '%';
+    s.style.left = '-20%';
+    wm.appendChild(s);
+  }
+
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  document.addEventListener('copy', function(e){ e.preventDefault(); });
+  document.addEventListener('cut', function(e){ e.preventDefault(); });
+
+  // button-based answers (ANO/NE, A-D, A-C)
+  document.querySelectorAll('.q').forEach(function(q){
+    var btns = q.querySelectorAll('.ans-btn');
+    btns.forEach(function(b){
+      b.addEventListener('click', function(){
+        if (b.disabled) return;
+        btns.forEach(function(x){ x.classList.remove('selected'); });
+        b.classList.add('selected');
+        q.dataset.selected = b.dataset.val;
+      });
+    });
+  });
+
+  document.querySelectorAll('.check-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var containerId = btn.dataset.task;
+      var container = document.getElementById(containerId);
+      var qs = container.querySelectorAll('.q');
+      var hint = document.querySelector('[data-hint="' + containerId + '"]');
+      var scoreEl = document.querySelector('[data-score="' + containerId + '"]');
+
+      var unanswered = 0;
+      qs.forEach(function(q){
+        if (!q.dataset.selected) unanswered++;
+      });
+      if (unanswered > 0){
+        hint.textContent = 'Zodpovězte prosím ještě ' + unanswered + (unanswered === 1 ? ' otázku.' : ' otázky/otázek.');
+        return;
+      }
+      hint.textContent = '';
+
+      var correctCount = 0;
+      qs.forEach(function(q){
+        var correct = q.dataset.correct;
+        var explain = q.querySelector('.explain');
+        var selected = q.dataset.selected;
+        var btns = q.querySelectorAll('.ans-btn');
+        btns.forEach(function(b){
+          b.disabled = true;
+          b.classList.remove('selected');
+          if (b.dataset.val === selected && selected === correct){ b.classList.add('correct'); }
+          else if (b.dataset.val === selected && selected !== correct){ b.classList.add('incorrect'); }
+          else if (b.dataset.val === correct){ b.classList.add('reveal'); }
+        });
+        var isRight = (selected === correct);
+        if (isRight){ correctCount++; }
+        else if (explain){ explain.classList.add('show'); }
+      });
+
+      scoreEl.textContent = 'Výsledek: ' + correctCount + ' / ' + qs.length;
+      scoreEl.classList.add('show');
+      scoreEl.classList.add(correctCount === qs.length ? 'good' : 'bad');
+      btn.disabled = true;
+
+      statsMaybeSend();
+    });
+  });
+
+  // ---- anonymní statistika (Čtení — úřady a poplatky) ----
+  // Posílá se stejnému Apps Scriptu jako u TP A2 testů, jen s t:'cu' a jedním skóre 0–20.
+  var STATS_URL = 'https://script.google.com/macros/s/AKfycbykeF2f3tf5eUYzeQ4Kjg5AKGK8BSKCk213zwxBkkSslMFuXxGYwlMT97fzwpRej8_8/exec';
+  var STATS_MIN = 10; // statistika se zobrazí, až odpoví aspoň 10 lidí (shodné s ostatními testy)
+  var STATS_TASKS = ['ct1-q', 'ct2-q', 'ct3-q', 'ct4-q'];
+  var statsSent = false;
+
+  function statsGetId(){
+    try {
+      var id = localStorage.getItem('cu-anon-id');
+      if (!id){
+        id = 'cu' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+        localStorage.setItem('cu-anon-id', id);
+      }
+      return id;
+    } catch(e){ return null; }
+  }
+
+  function statsOptedOut(){
+    try { return localStorage.getItem('cu-stats-optout') === '1'; } catch(e){ return false; }
+  }
+
+  var optBox = document.getElementById('statsOptOutBox');
+  if (optBox){
+    try { optBox.checked = statsOptedOut(); } catch(e){}
+    optBox.addEventListener('change', function(){
+      try { localStorage.setItem('cu-stats-optout', optBox.checked ? '1' : '0'); } catch(e){}
+    });
+  }
+
+  function statsProgress(){
+    var answered = 0, correct = 0;
+    STATS_TASKS.forEach(function(cid){
+      var container = document.getElementById(cid);
+      if (!container) return;
+      container.querySelectorAll('.q').forEach(function(q){
+        var anyDisabled = false;
+        q.querySelectorAll('.ans-btn').forEach(function(b){ if (b.disabled) anyDisabled = true; });
+        if (anyDisabled){
+          answered++;
+          if (q.querySelector('.ans-btn.correct')) correct++;
+        }
+      });
+    });
+    return { answered: answered, correct: correct };
+  }
+
+  function statsRender(souhrn, myScore){
+    var box = document.getElementById('statsResultBox');
+    if (!box) return;
+    if (!souhrn || !souhrn.n || souhrn.n < STATS_MIN){
+      box.hidden = true;
+      return;
+    }
+    var lepsiNez = 0;
+    for (var i = 0; i < myScore && i < souhrn.hist.length; i++) lepsiNez += souhrn.hist[i];
+    var pct = Math.round((lepsiNez / souhrn.n) * 100);
+    var nEl = document.getElementById('statsN');
+    var avgEl = document.getElementById('statsAvg');
+    var pctEl = document.getElementById('statsPct');
+    if (nEl) nEl.textContent = souhrn.n;
+    if (avgEl) avgEl.textContent = souhrn.prumer;
+    if (pctEl) pctEl.textContent = pct;
+    box.hidden = false;
+  }
+
+  function statsMaybeSend(){
+    var progress = statsProgress();
+    if (progress.answered < STATS_MIN || statsOptedOut() || statsSent) return;
+    var id = statsGetId();
+    if (!id) return;
+    statsSent = true;
+    fetch(STATS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ t: 'cu', id: id, s: progress.correct })
+    })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (data && data.ok) statsRender(data.souhrn, progress.correct);
+      })
+      .catch(function(){ /* bez internetu / v náhledu Artifactu — test funguje dál beze statistiky */ });
+  }
+})();
+</script>
+
+</body>
+</html>
